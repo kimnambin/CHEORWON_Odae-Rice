@@ -8,7 +8,7 @@ const mockProducts = [
     weight: 10,
     millingDate: '2026-02-23',
     isBest: true,
-    imageUrl: '/rice-sample.jpg',
+    imageUrl: '',
   },
 ];
 
