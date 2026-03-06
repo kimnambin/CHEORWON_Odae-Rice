@@ -4,7 +4,9 @@ export default function MillingInfo() {
   return (
     <section className="bg-stone-50 rounded-3xl p-8 md:p-12">
       <div className="text-center mb-10">
-        <h2 className="text-2xl font-bold mb-2">당일 도정 원칙</h2>
+        <h2 className="text-2xl font-bold mb-2">
+          당일 도정 원칙(철원 오대쌀만의 차별성)
+        </h2>
         <p className="text-muted-foreground">
           맛있는 밥맛의 비결은 도정 시기에 있습니다.
         </p>

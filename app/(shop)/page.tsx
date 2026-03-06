@@ -3,6 +3,7 @@ import CategoryNav from '@/components/shop/CategoryNav';
 import ProductCard from '@/components/common/ProductCard';
 import MillingInfo from '@/components/shop/MillingInfo';
 import FadeInUp from '@/components/common/FadeInUp';
+import ProductSwiper from '@/components/shop/ProductSwiper';
 
 const mockProducts = [
   {
@@ -31,7 +32,7 @@ export default function Home() {
       {/* 1. 비주얼 배너 섹션 */}
       <MainBanner />
 
-      <main className="container mx-auto px-4 flex flex-col gap-16">
+      <main className="container mx-auto px-4 flex flex-col gap-16 mt-5">
         {/* 2. 카테고리 네비게이션 */}
         <FadeInUp>
           {' '}
@@ -55,10 +56,20 @@ export default function Home() {
                 </p>
               </div>
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-              {mockProducts.map(product => (
-                <ProductCard key={product.id} product={product} />
-              ))}
+            <div className="snap-start min-h-screen flex items-center bg-white">
+              <main className="container mx-auto px-4 w-full">
+                <FadeInUp>
+                  <div className="mb-10 text-center">
+                    <h2 className="text-3xl font-bold">인기 쌀 상품</h2>
+                    <p className="text-muted-foreground mt-2">
+                      좌우로 밀어서 쌀을 구경해 보세요.
+                    </p>
+                  </div>
+
+                  {/* 💡 기존 그리드 대신 스와이퍼 적용! */}
+                  <ProductSwiper products={mockProducts} />
+                </FadeInUp>
+              </main>
             </div>
           </section>
         </FadeInUp>
