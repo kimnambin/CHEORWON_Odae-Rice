@@ -43,8 +43,8 @@ export default function ProductSwiper({products}: ProductSwiperProps) {
         pagination={{clickable: true}}
         navigation={true}
         modules={[EffectCoverflow, Pagination, Navigation]}
-        className="max-w-[1200px] !pb-14" // 페이지네이션 공간 확보
-      >
+        touchStartPreventDefault={false}
+        className="max-w-300 pb-14! touch-pan-y">
         {products.map(product => (
           <SwiperSlide key={product.id} className="max-w-[320px]">
             <ProductCard product={product} />

@@ -1,9 +1,13 @@
+'use client';
+
 import MainBanner from '@/components/shop/MainBanner';
 import CategoryNav from '@/components/shop/CategoryNav';
 import ProductCard from '@/components/common/ProductCard';
 import MillingInfo from '@/components/shop/MillingInfo';
 import FadeInUp from '@/components/common/FadeInUp';
 import ProductSwiper from '@/components/shop/ProductSwiper';
+import {useState} from 'react';
+import {CategoryId, categories} from '@/components/shop/CategoryNav';
 
 const mockProducts = [
   {
@@ -27,58 +31,62 @@ const mockProducts = [
 ];
 
 export default function Home() {
+  const [activeCategory, setActiveCategory] = useState<CategoryId>('all');
+
+  const currentCategory = categories.find(c => c.id === activeCategory);
+
+  // 만약 못 찾으면 기본값으로 '전체보기'를 씁니다.
+  const displayLabel = currentCategory ? currentCategory.label : '전체보기';
+
   return (
+    // 최상위 부모: 전체 화면을 감싸고 세로 스크롤 스냅을 지시합니다.
     <div className="h-screen w-full overflow-y-scroll snap-y snap-mandatory">
-      {/* 1. 비주얼 배너 섹션 */}
-      <MainBanner />
+      {/* 메인 배너 */}
+      <div className="snap-start snap-always h-screen">
+        <MainBanner />
+      </div>
 
-      <main className="container mx-auto px-4 flex flex-col gap-16 mt-5">
-        {/* 2. 카테고리 네비게이션 */}
-        <FadeInUp>
-          {' '}
-          <section>
-            <h2 className="text-xl font-semibold mb-6">
-              어떤 쌀을 찾으시나요?
-            </h2>
-            <CategoryNav />
-          </section>
-        </FadeInUp>
+      {/* 카테고리 + 인기 상품 스와이퍼 */}
 
-        {/* 3. 베스트 상품 섹션 */}
-        <FadeInUp delay={0.2}>
-          {' '}
-          <section>
-            <div className="flex justify-between items-end mb-8">
-              <div>
-                <h2 className="text-3xl font-bold">인기 쌀 상품</h2>
+      <div className="snap-start snap-always min-h-screen bg-white flex flex-col justify-center py-10">
+        <div className="container mx-auto px-4 flex flex-col gap-8">
+          {/* 카테고리 네비게이션 */}
+          <FadeInUp>
+            <section>
+              <h2 className="text-xl font-semibold mb-6">
+                어떤 쌀을 찾으시나요?
+              </h2>
+              <CategoryNav
+                activeCategory={activeCategory}
+                setActiveCategory={setActiveCategory}
+              />
+            </section>
+          </FadeInUp>
+
+          {/* 베스트 상품*/}
+          <FadeInUp delay={0.2}>
+            <section>
+              <div className="mb-6 text-center">
+                <h2 className="text-3xl font-bold">{displayLabel}</h2>
                 <p className="text-muted-foreground mt-2">
-                  지금 가장 많은 선택을 받고 있는 쌀입니다.
+                  좌우로 밀어서 쌀을 구경해 보세요.
                 </p>
               </div>
-            </div>
-            <div className="snap-start min-h-screen flex items-center bg-white">
-              <main className="container mx-auto px-4 w-full">
-                <FadeInUp>
-                  <div className="mb-10 text-center">
-                    <h2 className="text-3xl font-bold">인기 쌀 상품</h2>
-                    <p className="text-muted-foreground mt-2">
-                      좌우로 밀어서 쌀을 구경해 보세요.
-                    </p>
-                  </div>
 
-                  {/* 💡 기존 그리드 대신 스와이퍼 적용! */}
-                  <ProductSwiper products={mockProducts} />
-                </FadeInUp>
-              </main>
-            </div>
-          </section>
-        </FadeInUp>
+              <ProductSwiper products={mockProducts} />
+            </section>
+          </FadeInUp>
+        </div>
+      </div>
 
-        {/* 4. 도정 정보 안내 (신뢰 섹션) */}
-        <FadeInUp delay={0.3}>
-          <MillingInfo />
-        </FadeInUp>
-      </main>
+      {/* 도정 정보 안내 */}
+      <div className="snap-start snap-always min-h-screen bg-stone-50 flex items-center">
+        <div className="container mx-auto px-4 w-full">
+          <FadeInUp delay={0.3}>
+            <MillingInfo />
+          </FadeInUp>
+        </div>
+      </div>
     </div>
   );
 }
