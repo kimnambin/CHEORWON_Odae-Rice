@@ -10,7 +10,6 @@ export interface Category {
   label: string;
 }
 
-// 쌀 카테고리 목록 (원본은 그대로 둡니다)
 export const categories: Category[] = [
   {id: 'all', label: '전체보기'},
   {id: 'odae', label: '철원 오대쌀'},
@@ -27,32 +26,28 @@ export default function CategoryNav({
   activeCategory: CategoryId;
   setActiveCategory: (id: CategoryId) => void;
 }) {
-  const scrollRef = useRef<HTMLDivElement>(null);
-
-  const activeItem = categories.find(c => c.id === activeCategory);
-  const otherItems = categories.filter(c => c.id !== activeCategory);
-
-  const displayCategories = activeItem
-    ? [activeItem, ...otherItems]
-    : categories;
+  const buttonRefs = useRef<Record<string, HTMLButtonElement | null>>({});
 
   useEffect(() => {
-    if (scrollRef.current) {
-      scrollRef.current.scrollTo({
-        left: 0,
+    const activeBtn = buttonRefs.current[activeCategory];
+
+    if (activeBtn) {
+      activeBtn.scrollIntoView({
         behavior: 'smooth',
+        block: 'nearest',
+        inline: 'center',
       });
     }
   }, [activeCategory]);
 
   return (
-    <div
-      ref={scrollRef}
-      className="flex gap-2 overflow-x-auto pb-2 
-                 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-      {displayCategories.map(category => (
+    <div className="flex gap-2 overflow-x-auto pb-2 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+      {categories.map(category => (
         <Button
           key={category.id}
+          ref={el => {
+            buttonRefs.current[category.id] = el;
+          }}
           variant={activeCategory === category.id ? 'default' : 'ghost'}
           onClick={() => setActiveCategory(category.id)}
           className={`

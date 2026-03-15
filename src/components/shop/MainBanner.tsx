@@ -1,6 +1,12 @@
 import {Button} from '@/components/ui/button';
 
 export default function MainBanner() {
+  const scrollToProducts = () => {
+    document.getElementById('products-section')?.scrollIntoView({
+      behavior: 'smooth',
+    });
+  };
+
   return (
     <section className="relative h-screen w-full flex items-center justify-center bg-stone-100 overflow-hidden">
       {/* 뒷 배경 이미지 */}
@@ -25,6 +31,7 @@ export default function MainBanner() {
           직접 농사 지어 품질을 보장합니다.
         </p>
         <Button
+          onClick={scrollToProducts}
           size="lg"
           className="rounded-full px-10 text-xl font-bold
                      bg-amber-500 text-black 
