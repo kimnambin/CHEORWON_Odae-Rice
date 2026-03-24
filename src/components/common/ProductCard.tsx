@@ -40,7 +40,9 @@ export default function ProductCard({product}: ProductCardProps) {
               src={product.imageUrl}
               alt={product.name}
               fill
-              className="object-cover transition-transform duration-500 group-hover:scale-110"
+              sizes="(max-width: 640px) 80vw, (max-width: 1024px) 40vw, 320px"
+              quality={100}
+              className="object-cover transition-transform duration-500 md:group-hover:scale-110"
             />
           </div>
         </CardHeader>

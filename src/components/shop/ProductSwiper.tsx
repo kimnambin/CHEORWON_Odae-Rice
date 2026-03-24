@@ -34,11 +34,11 @@ export default function ProductSwiper({products}: ProductSwiperProps) {
         centeredSlides={true}
         slidesPerView={'auto'} // 카드가 겹쳐 보이려면 auto가 좋습니다.
         coverflowEffect={{
-          rotate: 50, // 회전 각도
+          rotate: 20, // 회전 각도
           stretch: 0, // 카드 간의 거리 (겹침 정도)
-          depth: 100, // 깊이감 (뒤로 얼마나 물러날지)
+          depth: 50, // 깊이감 (뒤로 얼마나 물러날지)
           modifier: 1, // 효과 배수
-          slideShadows: true, // 카드 옆면 그림자
+          slideShadows: false, // 카드 옆면 그림자
         }}
         pagination={{clickable: true}}
         navigation={true}

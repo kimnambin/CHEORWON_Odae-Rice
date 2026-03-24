@@ -1,16 +1,31 @@
 'use client';
 
 import MainBanner from '@/components/shop/MainBanner';
-import CategoryNav from '@/components/shop/CategoryNav';
+import CategoryNav, {
+  MainCategoryId,
+  SubCategoryId,
+} from '@/components/shop/CategoryNav';
 import ProductCard from '@/components/common/ProductCard';
 import MillingInfo from '@/components/shop/MillingInfo';
 import FadeInUp from '@/components/common/FadeInUp';
 import ProductSwiper from '@/components/shop/ProductSwiper';
 import {useState} from 'react';
-import {CategoryId, categories} from '@/components/shop/CategoryNav';
+import {categories} from '@/components/shop/CategoryNav';
 import {useRouter} from 'next/navigation';
 
-const mockProducts = [
+interface Product {
+  id: string;
+  name: string;
+  price: number;
+  weight: number;
+  millingDate: string;
+  isBest: boolean;
+  imageUrl: string;
+  mainCategory: MainCategoryId;
+  subCategory: SubCategoryId;
+}
+
+const mockProducts: Product[] = [
   {
     id: '1',
     name: '철원 오대쌀 (특등급)',
@@ -19,30 +34,48 @@ const mockProducts = [
     millingDate: '2026-03-02',
     isBest: true,
     imageUrl: '/images/exp01.jpeg',
-    categoryId: 'odae',
+    mainCategory: 'grains',
+    subCategory: 'rice',
   },
   {
     id: '2',
-    name: '철원 오대쌀 (등급)',
-    price: 25000,
-    weight: 10,
+    name: '유기농 현미 (5kg)',
+    price: 18000,
+    weight: 5,
     millingDate: '2026-03-03',
     isBest: true,
     imageUrl: '/images/exp02.jpeg',
-    categoryId: 'brown',
+    mainCategory: 'grains',
+    subCategory: 'brown',
+  },
+  {
+    id: '3',
+    name: '산지직송 싱싱 배추',
+    price: 12000,
+    weight: 3,
+    millingDate: '2026-03-24',
+    isBest: false,
+    imageUrl: '/images/exp03.jpeg', // 실제 이미지로 교체 필요
+    mainCategory: 'vegetables',
+    subCategory: 'cabbage',
   },
 ];
 
 export default function Home() {
-  const [activeCategory, setActiveCategory] = useState<CategoryId>('all');
+  // 카테고라 대분류
+  const [activeMain, setActiveMain] = useState<MainCategoryId>('grains');
+  const [activeSub, setActiveSub] = useState<SubCategoryId>('all');
 
-  const currentCategory = categories.find(c => c.id === activeCategory);
-  const displayLabel = currentCategory ? currentCategory.label : '전체보기';
+  //  카테고리 소분류
+  const currentMain = categories.find(c => c.id === activeMain);
+  const currentSub = currentMain?.subCategories.find(s => s.id === activeSub);
+  const displayLabel = currentSub ? currentSub.label : '전체보기';
 
-  const filteredProducts =
-    activeCategory === 'all'
-      ? mockProducts
-      : mockProducts.filter(p => p.categoryId === activeCategory);
+  const filteredProducts = mockProducts.filter(product => {
+    const isMainMatch = product.mainCategory === activeMain;
+    const isSubMatch = activeSub === 'all' || product.subCategory === activeSub;
+    return isMainMatch && isSubMatch;
+  });
 
   return (
     <div className="h-screen w-full overflow-y-scroll snap-y snap-mandatory">
@@ -62,19 +95,18 @@ export default function Home() {
                 어떤 쌀을 찾으시나요?
               </h2> */}
               <CategoryNav
-                activeCategory={activeCategory}
-                setActiveCategory={setActiveCategory}
+                activeMain={activeMain}
+                setActiveMain={setActiveMain}
+                activeSub={activeSub}
+                setActiveSub={setActiveSub}
               />
             </section>
           </FadeInUp>
 
           <FadeInUp delay={0.2}>
-            <section className="min-h-[400px] flex flex-col">
-              <div className="mb-6 text-center">
+            <section className="min-h-100 flex flex-col">
+              <div className="mb-2 text-center">
                 <h2 className="text-3xl font-bold">{displayLabel}</h2>
-                <p className="text-muted-foreground text-stone-400 mt-2 text-sm md:text-base">
-                  좌우로 밀어서 쌀을 구경해 보세요.
-                </p>
               </div>
 
               {/* 상품이 있을 때와 없을 때를 구분 */}
@@ -92,7 +124,7 @@ export default function Home() {
                     다른 카테고리를 확인해 보시겠어요?
                   </p>
                   <button
-                    onClick={() => setActiveCategory('all')}
+                    onClick={() => setActiveSub('all')}
                     className="mt-6 text-amber-600 hover:underline font-semibold">
                     전체 상품 보기
                   </button>

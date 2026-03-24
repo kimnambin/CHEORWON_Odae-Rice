@@ -4,7 +4,15 @@ import {useState} from 'react';
 import Image from 'next/image';
 import {Button} from '@/components/ui/button';
 import {Badge} from '@/components/ui/badge';
-import {Star, MapPin, CalendarCheck, Info, Home} from 'lucide-react';
+import {
+  Star,
+  MapPin,
+  CalendarCheck,
+  Info,
+  Home,
+  UserCheck,
+  CheckCircle2,
+} from 'lucide-react';
 import {
   Tooltip,
   TooltipContent,
@@ -12,6 +20,14 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 import {useRouter} from 'next/navigation';
+import {useCart} from '@/hooks/useCart';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogFooter,
+  DialogTitle,
+} from '@/components/ui/dialog';
 
 interface TasteGuide {
   stickiness: number; // 찰기
@@ -38,6 +54,20 @@ interface ProductDetail {
   images: string[];
   reviews: Review[];
 }
+
+// 판매자 정보
+interface SellerInfo {
+  name: string;
+  phone: string;
+  address: string;
+}
+
+// 임시 판매자 데이터
+const mockSeller: SellerInfo = {
+  name: '박철원',
+  phone: '010-1234-5678',
+  address: '강원도 철원군 동송읍 ...',
+};
 
 // 임시 상품 데이터
 const mockProduct: ProductDetail = {
@@ -66,8 +96,23 @@ const weightOptions = [1, 2, 3, 5, 10, 15, 20];
 export default function ProductDetailPage() {
   const [selectedWeight, setSelectedWeight] = useState<number>(10);
   const router = useRouter();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const {addToCart} = useCart();
+
   const handleCheckout = () => {
     router.push('/checkout');
+  };
+
+  const handleAddToCart = () => {
+    addToCart({
+      id: mockProduct.id,
+      name: mockProduct.name,
+      price: mockProduct.price,
+      weight: selectedWeight,
+      quantity: 1,
+      imageUrl: mockProduct.images[0],
+    });
+    setIsModalOpen(true);
   };
 
   return (
@@ -105,6 +150,28 @@ export default function ProductDetailPage() {
           </div>
 
           <hr className="border-stone-200" />
+
+          <div className="bg-amber-50/50 p-5 rounded-2xl border border-amber-100">
+            <h3 className="font-semibold mb-3 flex items-center gap-2 text-amber-900">
+              <UserCheck className="w-4 h-4" /> 판매자 정보
+            </h3>
+            <div className="space-y-2">
+              <div className="flex justify-between items-center">
+                <span className="text-sm text-stone-500">판매자명</span>
+                <span className="text-sm font-medium text-stone-800">
+                  {mockSeller.name}
+                </span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-sm text-stone-500">연락처</span>
+                <a
+                  href={`tel:${mockSeller.phone}`}
+                  className="text-sm font-bold text-amber-600 hover:underline">
+                  {mockSeller.phone}
+                </a>
+              </div>
+            </div>
+          </div>
 
           <div>
             <h3 className="font-semibold mb-3">
@@ -158,6 +225,7 @@ export default function ProductDetailPage() {
 
           <div className="mt-auto pt-6 flex gap-3">
             <Button
+              onClick={handleAddToCart}
               size="lg"
               variant="outline"
               className="w-1/3 text-lg rounded-full">
@@ -172,6 +240,37 @@ export default function ProductDetailPage() {
           </div>
         </div>
       </div>
+
+      <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+        <DialogContent className="max-w-[340px] rounded-2xl p-6 border-none shadow-2xl">
+          <DialogHeader className="flex flex-col items-center gap-4 py-4">
+            <div className="w-16 h-16 bg-amber-50 text-amber-500 rounded-full flex items-center justify-center animate-bounce">
+              <CheckCircle2 className="w-10 h-10" />
+            </div>
+            <DialogTitle className="text-xl font-black text-stone-800">
+              장바구니 담기 완료!
+            </DialogTitle>
+            <p className="text-center text-stone-500 text-sm leading-relaxed">
+              선택하신 상품이 장바구니에
+              <br />
+              안전하게 담겼습니다.
+            </p>
+          </DialogHeader>
+          <DialogFooter className="flex flex-col gap-2 sm:flex-col">
+            <Button
+              className="w-full bg-amber-500 hover:bg-amber-600 text-black font-bold h-12 rounded-xl"
+              onClick={() => router.push('/cart')}>
+              장바구니 확인하기
+            </Button>
+            <Button
+              variant="ghost"
+              className="w-full text-stone-400 hover:text-stone-600"
+              onClick={() => setIsModalOpen(false)}>
+              쇼핑 계속하기
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       {/* ---  리뷰 영역 --- */}
       <div className="mt-24">
