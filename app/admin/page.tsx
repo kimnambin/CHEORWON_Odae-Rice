@@ -22,14 +22,23 @@ import {
   Package,
   ShoppingBag,
 } from 'lucide-react';
+import Link from 'next/link';
+import {Home} from 'lucide-react';
 
 export default function AdminIntegratedPage() {
   return (
     <div className="container mx-auto py-10 px-4 max-w-6xl">
-      <div className="mb-10">
-        <h1 className="text-4xl font-black text-stone-800 tracking-tight mb-2">
+      <div className="flex items-center gap-3 group mb-3">
+        <Link href="/">
+          <div className="p-2 rounded-xl bg-white border border-stone-200 text-stone-400 hover:text-amber-600 hover:border-amber-200 hover:bg-amber-50 transition-all cursor-pointer shadow-sm hover:scale-110 active:scale-95">
+            <Home className="w-6 h-6" />
+          </div>
+        </Link>
+        <h1 className="text-4xl font-black text-stone-800 tracking-tight">
           관리자 페이지
         </h1>
+      </div>
+      <div className="flex items-center gap-3 group">
         <Tabs defaultValue="dashboard" className="space-y-6">
           <TabsList className="bg-stone-100 p-1 rounded-xl grid grid-cols-4 w-full max-w-2xl">
             <TabsTrigger

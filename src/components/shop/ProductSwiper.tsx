@@ -29,39 +29,40 @@ export default function ProductSwiper({products}: ProductSwiperProps) {
   return (
     <div className="w-full py-10">
       <Swiper
-        effect={'coverflow'} // 💡 핵심: 커버플로우 효과
         grabCursor={true}
         centeredSlides={true}
-        slidesPerView={'auto'} // 카드가 겹쳐 보이려면 auto가 좋습니다.
+        slidesPerView={'auto'}
+        effect={'coverflow'}
         coverflowEffect={{
-          rotate: 20, // 회전 각도
-          stretch: 0, // 카드 간의 거리 (겹침 정도)
-          depth: 50, // 깊이감 (뒤로 얼마나 물러날지)
-          modifier: 1, // 효과 배수
-          slideShadows: false, // 카드 옆면 그림자
+          rotate: 0, // 🔥 모바일 blur 줄이기
+          stretch: 0,
+          depth: 0,
+          modifier: 1,
+          slideShadows: false,
+        }}
+        breakpoints={{
+          768: {
+            effect: 'coverflow',
+            coverflowEffect: {
+              rotate: 20,
+              stretch: 0,
+              depth: 50,
+              modifier: 1,
+              slideShadows: false,
+            },
+          },
         }}
         pagination={{clickable: true}}
         navigation={true}
         modules={[EffectCoverflow, Pagination, Navigation]}
         touchStartPreventDefault={false}
-        className="max-w-300 pb-14! touch-pan-y">
+        className="max-w-300 pb-14 touch-pan-y">
         {products.map(product => (
           <SwiperSlide key={product.id} className="max-w-[320px]">
             <ProductCard product={product} />
           </SwiperSlide>
         ))}
       </Swiper>
-
-      {/* 💡 Swiper 기본 화살표 색상 커스텀 (CSS) */}
-      <style jsx global>{`
-        .swiper-button-next,
-        .swiper-button-prev {
-          color: #f59e0b !important; /* amber-500 색상 */
-        }
-        .swiper-pagination-bullet-active {
-          background: #f59e0b !important;
-        }
-      `}</style>
     </div>
   );
 }

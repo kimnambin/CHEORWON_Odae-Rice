@@ -1,3 +1,30 @@
 @import 'tw-animate-css';
 @import 'shadcn/tailwind.css';
 @import 'tailwindcss';
+
+@layer components {
+  .swiper-slide {
+    @apply transition-all duration-300;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    transform: translateZ(0);
+    will-change: transform;
+  }
+
+  .swiper-slide:not(.swiper-slide-active) {
+    @apply opacity-50;
+  }
+
+  .swiper-slide-active {
+    @apply opacity-100 scale-100;
+  }
+
+  .swiper-button-next,
+  .swiper-button-prev {
+    @apply text-amber-500;
+  }
+
+  .swiper-pagination-bullet-active {
+    @apply bg-amber-500;
+  }
+}

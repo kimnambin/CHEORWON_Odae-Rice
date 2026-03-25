@@ -241,37 +241,6 @@ export default function ProductDetailPage() {
         </div>
       </div>
 
-      <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-        <DialogContent className="max-w-[340px] rounded-2xl p-6 border-none shadow-2xl">
-          <DialogHeader className="flex flex-col items-center gap-4 py-4">
-            <div className="w-16 h-16 bg-amber-50 text-amber-500 rounded-full flex items-center justify-center animate-bounce">
-              <CheckCircle2 className="w-10 h-10" />
-            </div>
-            <DialogTitle className="text-xl font-black text-stone-800">
-              장바구니 담기 완료!
-            </DialogTitle>
-            <p className="text-center text-stone-500 text-sm leading-relaxed">
-              선택하신 상품이 장바구니에
-              <br />
-              안전하게 담겼습니다.
-            </p>
-          </DialogHeader>
-          <DialogFooter className="flex flex-col gap-2 sm:flex-col">
-            <Button
-              className="w-full bg-amber-500 hover:bg-amber-600 text-black font-bold h-12 rounded-xl"
-              onClick={() => router.push('/cart')}>
-              장바구니 확인하기
-            </Button>
-            <Button
-              variant="ghost"
-              className="w-full text-stone-400 hover:text-stone-600"
-              onClick={() => setIsModalOpen(false)}>
-              쇼핑 계속하기
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-
       {/* ---  리뷰 영역 --- */}
       <div className="mt-24">
         <h2 className="text-2xl font-bold mb-6">

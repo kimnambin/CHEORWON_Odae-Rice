@@ -5,9 +5,15 @@ import Image from 'next/image';
 import {Button} from '@/components/ui/button';
 import {Trash2, Plus, Minus, ShoppingBag, AlertCircle} from 'lucide-react';
 import Link from 'next/link';
+import {useRouter} from 'next/navigation';
 
 export default function CartPage() {
   const {cart, removeFromCart, updateQuantity, totalPrice} = useCart();
+  const router = useRouter();
+
+  const handleCheckout = () => {
+    router.push('/checkout');
+  };
 
   if (cart.length === 0) {
     return (
@@ -36,10 +42,11 @@ export default function CartPage() {
         <div className="text-sm text-blue-700">
           <p className="font-bold">안내사항</p>
           <p>
-            현재 비회원으로 이용 중입니다.{' '}
             <strong>
-              브라우저의 캐시를 삭제하거나 다른 기기/브라우저로 접속할 경우
+              새로고침하거나 브라우저의 캐시를 삭제하거나 다른 기기/브라우저로
+              접속할 경우
             </strong>{' '}
+            <br />
             장바구니 내역이 사라질 수 있으니 유의해 주세요.
           </p>
         </div>
@@ -112,7 +119,9 @@ export default function CartPage() {
                 </span>
               </div>
             </div>
-            <Button className="w-full bg-amber-500 hover:bg-amber-600 text-black py-7 rounded-2xl font-black text-lg shadow-lg shadow-amber-100">
+            <Button
+              onClick={handleCheckout}
+              className="w-full bg-amber-500 hover:bg-amber-600 text-black py-7 rounded-2xl font-black text-lg shadow-lg shadow-amber-100">
               구매하기
             </Button>
           </div>
