@@ -13,6 +13,7 @@ export interface CartItem {
 
 export const useCart = () => {
   const [cart, setCart] = useState<CartItem[]>([]);
+  const [isInitialized, setIsInitialized] = useState(false);
 
   // 로컬 스토리지에서 가져오기
   useEffect(() => {
@@ -20,28 +21,42 @@ export const useCart = () => {
     if (savedCart) {
       setCart(JSON.parse(savedCart));
     }
+    setIsInitialized(true);
   }, []);
 
   // 장바구니 상태가 변할 때마다 로컬 스토리지 동기화
   useEffect(() => {
-    localStorage.setItem('rice-shop-cart', JSON.stringify(cart));
-  }, [cart]);
+    if (isInitialized) {
+      localStorage.setItem('rice-shop-cart', JSON.stringify(cart));
+
+      window.dispatchEvent(new Event('storage'));
+    }
+  }, [cart, isInitialized]);
 
   const addToCart = (product: CartItem) => {
-    setCart(prev => {
-      const existing = prev.find(
-        item => item.id === product.id && item.weight === product.weight,
+    const savedCart = localStorage.getItem('rice-shop-cart');
+    const currentCart: CartItem[] = savedCart ? JSON.parse(savedCart) : [];
+
+    const existing = currentCart.find(
+      item => item.id === product.id && item.weight === product.weight,
+    );
+    let newCart;
+
+    if (existing) {
+      newCart = currentCart.map(item =>
+        item.id === product.id && item.weight === product.weight
+          ? {...item, quantity: item.quantity + 1}
+          : item,
       );
-      if (existing) {
-        return prev.map(item =>
-          item.id === product.id && item.weight === product.weight
-            ? {...item, quantity: item.quantity + 1}
-            : item,
-        );
-      }
-      return [...prev, product];
-    });
+    } else {
+      newCart = [...currentCart, product];
+    }
+
+    localStorage.setItem('rice-shop-cart', JSON.stringify(newCart));
+    setCart(newCart);
+
     alert('장바구니에 담겼습니다!');
+    window.dispatchEvent(new Event('cart-updated'));
   };
 
   const removeFromCart = (id: string, weight: number) => {

@@ -23,7 +23,7 @@ export default function CartPage() {
           장바구니가 비어있습니다.
         </h2>
         <p className="text-stone-500 mt-2 mb-8">맛있는 쌀을 담아보세요!</p>
-        <Link href="/">
+        <Link href="/#products-section">
           <Button className="bg-amber-500 hover:bg-amber-600 text-black px-8 py-6 rounded-full font-bold">
             쇼핑하러 가기
           </Button>

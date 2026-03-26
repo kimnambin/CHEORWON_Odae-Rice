@@ -78,7 +78,7 @@ export default function Home() {
   });
 
   return (
-    <div className="h-screen w-full overflow-y-scroll snap-y snap-mandatory">
+    <div className="flex-1 w-full overflow-y-scroll snap-y snap-mandatory">
       {/* 메인 배너 */}
       <div className="snap-start snap-always h-screen">
         <MainBanner />

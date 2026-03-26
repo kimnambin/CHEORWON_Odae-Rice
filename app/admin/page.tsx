@@ -21,14 +21,40 @@ import {
   TrendingUp,
   Package,
   ShoppingBag,
+  UploadCloud,
+  X,
 } from 'lucide-react';
 import Link from 'next/link';
 import {Home} from 'lucide-react';
-
+import {useState} from 'react';
+import Image from 'next/image';
 export default function AdminIntegratedPage() {
+  const [selectedImage, setSelectedImage] = useState<File | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+
+  // 💡 이미지 선택 시 실행되는 함수
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setSelectedImage(file);
+      // 파일을 읽어서 미리보기 URL 생성
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPreviewUrl(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  // 💡 선택한 이미지 삭제 함수
+  const handleRemoveImage = () => {
+    setSelectedImage(null);
+    setPreviewUrl(null);
+  };
+
   return (
     <div className="container mx-auto py-10 px-4 max-w-6xl">
-      <div className="flex items-center gap-3 group mb-3">
+      <div className="flex items-center  gap-3 group mb-3">
         <Link href="/">
           <div className="p-2 rounded-xl bg-white border border-stone-200 text-stone-400 hover:text-amber-600 hover:border-amber-200 hover:bg-amber-50 transition-all cursor-pointer shadow-sm hover:scale-110 active:scale-95">
             <Home className="w-6 h-6" />
@@ -38,41 +64,43 @@ export default function AdminIntegratedPage() {
           관리자 페이지
         </h1>
       </div>
-      <div className="flex items-center gap-3 group">
-        <Tabs defaultValue="dashboard" className="space-y-6">
+      <div className="flex items-center gap-3 group w-full">
+        <Tabs defaultValue="dashboard" className="w-full flex flex-col mx-auto">
           <TabsList className="bg-stone-100 p-1 rounded-xl grid grid-cols-4 w-full max-w-2xl">
             <TabsTrigger
               value="dashboard"
               className="rounded-lg gap-2   data-[state=active]:bg-amber-500 
                data-[state=active]:text-white 
                data-[state=active]:shadow-md">
-              <LayoutDashboard className="w-4 h-4" /> 대시보드
+              <LayoutDashboard className="w-4 h-4 hidden sm:block" /> 대시보드
             </TabsTrigger>
             <TabsTrigger
               value="upload"
               className="rounded-lg gap-2   data-[state=active]:bg-amber-500 
                data-[state=active]:text-white 
                data-[state=active]:shadow-md">
-              <PlusCircle className="w-4 h-4" /> 상품등록
+              <PlusCircle className="w-4 h-4 hidden sm:block" /> 상품등록
             </TabsTrigger>
             <TabsTrigger
               value="orders"
               className="rounded-lg gap-2   data-[state=active]:bg-amber-500 
                data-[state=active]:text-white 
                data-[state=active]:shadow-md">
-              <ClipboardList className="w-4 h-4" /> 주문현황
+              <ClipboardList className="w-4 h-4 hidden sm:block" /> 주문현황
             </TabsTrigger>
             <TabsTrigger
               value="seller"
               className="rounded-lg gap-2   data-[state=active]:bg-amber-500 
                data-[state=active]:text-white 
                data-[state=active]:shadow-md">
-              <UserCog className="w-4 h-4" /> 판매자설정
+              <UserCog className="w-4 h-4 hidden sm:block" /> 판매자설정
             </TabsTrigger>
           </TabsList>
 
           {/* --- [탭 1] 대시보드 (매출 및 요약) --- */}
-          <TabsContent value="dashboard" className="space-y-6">
+          <TabsContent
+            value="dashboard"
+            className="space-y-6 max-w-6xl mx-auto">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
               <StatCard
                 title="오늘 매출"
@@ -137,14 +165,60 @@ export default function AdminIntegratedPage() {
 
           {/* --- [탭 2] 상품 업로드 --- */}
           <TabsContent value="upload">
-            <Card className="border-stone-200 max-w-2xl mx-auto">
+            <Card className="border-stone-200 max-w-2xl mx-auto shadow-sm">
               <CardHeader>
                 <CardTitle>신규 상품 등록</CardTitle>
                 <CardDescription>
                   상품 이미지와 상세 정보를 입력해 등록하세요.
                 </CardDescription>
               </CardHeader>
-              <CardContent className="space-y-4">
+              <CardContent className="space-y-6">
+                {/* 💡 [추가] 이미지 업로드 영역 */}
+                <div className="space-y-2">
+                  <Label>상품 이미지</Label>
+
+                  {previewUrl ? (
+                    // 이미지가 선택되었을 때: 미리보기 화면
+                    <div className="relative w-full h-64 rounded-2xl overflow-hidden border border-stone-100 shadow-inner bg-stone-50">
+                      <Image
+                        src={previewUrl}
+                        alt="상품 미리보기"
+                        fill
+                        className="object-contain" // 비율 유지하면서 꽉 차게
+                      />
+                      {/* 이미지 삭제 버튼 */}
+                      <button
+                        onClick={handleRemoveImage}
+                        className="absolute top-3 right-3 bg-white/80 backdrop-blur-sm text-stone-600 p-1.5 rounded-full hover:bg-white hover:text-red-500 transition-colors shadow-md">
+                        <X className="w-5 h-5" />
+                      </button>
+                    </div>
+                  ) : (
+                    // 이미지가 없을 때: 업로드 클릭 영역
+                    <Label
+                      htmlFor="image-upload"
+                      className="flex flex-col items-center justify-center w-full h-64 border-2 border-dashed border-stone-200 rounded-2xl bg-stone-50 cursor-pointer hover:border-amber-300 hover:bg-amber-50/50 transition-all group">
+                      <div className="flex flex-col items-center justify-center pt-5 pb-6 text-stone-400 group-hover:text-amber-600">
+                        <UploadCloud className="w-10 h-10 mb-4 opacity-60" />
+                        <p className="mb-2 text-sm font-semibold">
+                          클릭하여 이미지 업로드
+                        </p>
+                        <p className="text-xs">
+                          PNG, JPG, WEBP (추천: 1000x1000px)
+                        </p>
+                      </div>
+                      {/* 숨겨진 실제 input */}
+                      <Input
+                        id="image-upload"
+                        type="file"
+                        accept="image/*"
+                        className="hidden"
+                        onChange={handleImageChange}
+                      />
+                    </Label>
+                  )}
+                </div>
+
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label>대분류</Label>
@@ -173,10 +247,10 @@ export default function AdminIntegratedPage() {
                   <Label>상품 설명</Label>
                   <Textarea
                     placeholder="상품에 대한 특징을 적어주세요."
-                    className="h-24"
+                    className="h-24 resize-none" // 크기 고정
                   />
                 </div>
-                <Button className="w-full bg-amber-500 hover:bg-amber-600 text-black font-bold py-6 rounded-xl">
+                <Button className="w-full bg-amber-500 hover:bg-amber-600 text-black font-bold py-7 rounded-xl text-lg shadow-lg shadow-amber-100">
                   상품 등록 완료
                 </Button>
               </CardContent>
